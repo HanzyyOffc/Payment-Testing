@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembayaran - HanzyyOffc</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="transition duration-500" id="body">
+  <div class="min-h-screen flex flex-col items-center justify-center px-4 py-10">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 max-w-md w-full text-center">
+      <h1 class="text-3xl font-bold text-indigo-600 dark:text-white mb-2">Pembayaran ke HanzyyOffc</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-300 mb-4">Scan atau salin nomor di bawah</p>
+      <img src="https://k.top4top.io/p_3474n29381.jpg" alt="QRIS HanzyyOffc" class="w-full max-w-xs mx-auto rounded-lg mb-4">
+
+      <div class="space-y-3 text-left">
+        <div>
+          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">DANA</p>
+          <div class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded p-2">
+            <span id="dana">082264176976</span>
+            <button onclick="copyText('dana')" class="text-blue-600 text-sm">Salin</button>
+          </div>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">GOPAY</p>
+          <div class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded p-2">
+            <span id="gopay">Underferied</span>
+            <button onclick="copyText('gopay')" class="text-blue-600 text-sm">Salin</button>
+          </div>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">OVO</p>
+          <div class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded p-2">
+            <span id="ovo">Underferied</span>
+            <button onclick="copyText('ovo')" class="text-blue-600 text-sm">Salin</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <input id="nama" type="text" placeholder="Nama Anda" class="w-full mb-2 p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        <button onclick="sudahBayar()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Sudah Bayar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white py-2 px-4 rounded shadow-md hidden z-50">Disalin!</div>
+
+  <!-- Struk untuk download -->
+  <div id="struk" class="p-6 max-w-sm w-full bg-white rounded-xl text-black hidden">
+    <h2 class="text-xl font-bold mb-4">Struk Pembayaran</h2>
+    <p><strong>Nama:</strong> <span id="struk-nama"></span></p>
+    <p><strong>Waktu:</strong> <span id="struk-waktu"></span></p>
+    <p><strong>Metode:</strong> QRIS</p>
+    <p class="mt-4">Terima kasih telah membayar ke <strong>HanzyyOffc</strong> 🙏</p>
+  </div>
+
+  <script>
+    // DARK MODE OTOMATIS
+    const jam = new Date().getHours();
+    if (jam >= 18 || jam <= 5) document.getElementById('body').classList.add('dark', 'bg-gray-900', 'text-white');
+
+    // Salin & Toast
+    function copyText(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text);
+      showToast("Disalin: " + text);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.remove("hidden");
+      setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 2000);
+    }
+
+    function sudahBayar() {
+      const nama = document.getElementById("nama").value || "Tanpa Nama";
+      const waktu = new Date().toLocaleString();
+
+      // Tampilkan struk
+      document.getElementById("struk-nama").textContent = nama;
+      document.getElementById("struk-waktu").textContent = waktu;
+      document.getElementById("struk").classList.remove("hidden");
+
+      html2pdf().from(document.getElementById("struk")).save("struk-hanzyyoffc.pdf");
+    }
+  </script>
+</body>
+</html>
