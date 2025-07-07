@@ -3,157 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pembayaran - HanzyyOffc</title>
+  <title>Pembayaran QR Produk - HanzyyOffc</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
-<body class="transition duration-500" id="body">
+<body class="transition duration-500 bg-gray-100 text-black dark:bg-gray-900 dark:text-white" id="body">
+
   <div class="min-h-screen flex flex-col items-center justify-center px-4 py-10">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 max-w-md w-full text-center">
-      <h1 class="text-3xl font-bold text-indigo-600 dark:text-white mb-2">Pembayaran ke HanzyyOffc</h1>
-      <p class="text-sm text-gray-500 dark:text-gray-300 mb-4">Scan atau salin nomor di bawah</p>
-      <img src="https://g.top4top.io/p_347205kts1.jpg" alt="QRIS HanzyyOffc" class="w-full max-w-xs mx-auto rounded-lg mb-4">
+      <h1 class="text-2xl font-bold text-indigo-600 dark:text-white mb-2">QR Pembayaran Produk</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-300 mb-4">Masukkan detail produk untuk menghasilkan QR</p>
 
-      <div class="space-y-3 text-left">
-        <div>
-          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">DANA</p>
-          <div class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded p-2">
-            <span id="dana">0886282627</span>
-            <button onclick="copyText('dana')" class="text-blue-600 text-sm">Salin</button>
-          </div>
-        </div>
-        <div>
-          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">GOPAY</p>
-          <div class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded p-2">
-            <span id="gopay">82962829928</span>
-            <button onclick="copyText('gopay')" class="text-blue-600 text-sm">Salin</button>
-          </div>
-        </div>
-        <div>
-          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">OVO</p>
-          <div class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded p-2">
-            <span id="ovo">92829290010</span>
-            <button onclick="copyText('ovo')" class="text-blue-600 text-sm">Salin</button>
-          </div>
-        </div>
+      <div class="space-y-3 text-left mb-4">
+        <input id="produk" type="text" placeholder="Nama Produk" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        <input id="harga" type="number" placeholder="Harga (contoh: 15000)" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
+        <select id="metode" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white">
+          <option value="DANA - 0886282627">DANA - 0886282627</option>
+          <option value="GOPAY - 82962829928">GOPAY - 82962829928</option>
+          <option value="OVO - 92829290010">OVO - 92829290010</option>
+        </select>
+        <button onclick="buatQR()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded">Buat QR</button>
       </div>
 
-      <div class="mt-6">
+      <div id="qr-box" class="hidden">
+        <img id="qr-image" src="" alt="QR Pembayaran" class="w-48 h-48 mx-auto mb-2 rounded-lg border" />
+        <p class="text-sm" id="qr-text"></p>
+      </div>
+
+      <div class="mt-4">
         <input id="nama" type="text" placeholder="Nama Anda" class="w-full mb-2 p-2 border rounded dark:bg-gray-700 dark:text-white" />
         <button onclick="sudahBayar()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Sudah Bayar</button>
       </div>
     </div>
   </div>
 
-  <!-- 🔒 Admin Login -->
-  <div id="admin-login" class="fixed bottom-4 left-4 bg-white dark:bg-gray-700 p-4 rounded-xl shadow-md z-50 hidden">
-    <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-white">Masukkan Password Admin:</label>
-    <input type="password" id="admin-password" class="w-full p-2 border rounded dark:bg-gray-800 dark:text-white mb-2" placeholder="Password">
-    <button onclick="cekPassword()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1 rounded">Masuk</button>
-  </div>
-
-  <!-- ⚙️ Panel Tema -->
-  <div id="admin-panel" class="hidden fixed bottom-4 left-4 bg-white dark:bg-gray-700 p-4 rounded-xl shadow-md z-50">
-    <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-white">Ubah Tema:</label>
-    <select onchange="ubahTema(this.value)" class="p-2 border rounded w-full dark:bg-gray-800 dark:text-white">
-      <option value="auto">Otomatis</option>
-      <option value="light">Terang</option>
-      <option value="dark">Gelap</option>
-    </select>
-  </div>
-
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white py-2 px-4 rounded shadow-md hidden z-50">Disalin!</div>
-
-  <!-- Struk -->
+  <!-- STRUK -->
   <div id="struk" class="p-6 max-w-sm w-full bg-white rounded-xl text-black hidden">
     <h2 class="text-xl font-bold mb-4">Struk Pembayaran</h2>
     <p><strong>Nama:</strong> <span id="struk-nama"></span></p>
+    <p><strong>Produk:</strong> <span id="struk-produk"></span></p>
+    <p><strong>Harga:</strong> Rp<span id="struk-harga"></span></p>
     <p><strong>Waktu:</strong> <span id="struk-waktu"></span></p>
-    <p><strong>Metode:</strong> QRIS</p>
+    <p><strong>Metode:</strong> <span id="struk-metode"></span></p>
     <p class="mt-4">Terima kasih telah membayar ke <strong>HanzyyOffc</strong> 🙏</p>
   </div>
 
   <script>
-    const ADMIN_PASSWORD = "hanzy123"; // 🔐 ganti password di sini
+    function buatQR() {
+      const produk = document.getElementById("produk").value;
+      const harga = document.getElementById("harga").value;
+      const metode = document.getElementById("metode").value;
 
-    // Ambil parameter tema & admin
-    const urlParams = new URLSearchParams(window.location.search);
-    const themeFromURL = urlParams.get('theme');
-    const isAdmin = urlParams.get('admin') === 'true';
-
-    const storedTheme = localStorage.getItem('theme');
-    let temaAktif = themeFromURL || storedTheme || 'auto';
-
-    const body = document.getElementById('body');
-    const adminPanel = document.getElementById('admin-panel');
-    const adminLogin = document.getElementById('admin-login');
-
-    function applyTheme(theme) {
-      body.classList.remove('dark', 'bg-gray-900', 'bg-white', 'text-white', 'text-black');
-      if (theme === 'dark') {
-        body.classList.add('dark', 'bg-gray-900', 'text-white');
-      } else if (theme === 'light') {
-        body.classList.add('bg-white', 'text-black');
-      } else {
-        const jam = new Date().getHours();
-        if (jam >= 18 || jam <= 5) {
-          body.classList.add('dark', 'bg-gray-900', 'text-white');
-        } else {
-          body.classList.add('bg-white', 'text-black');
-        }
+      if (!produk || !harga || !metode) {
+        alert("Lengkapi semua data produk.");
+        return;
       }
-    }
 
-    applyTheme(temaAktif);
+      const teksQR = `Produk: ${produk} | Harga: Rp${harga} | Metode: ${metode}`;
+      const urlQR = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(teksQR)}`;
 
-    // Tampilkan login admin jika URL mengandung ?admin=true
-    if (isAdmin) {
-      adminLogin.classList.remove('hidden');
-    }
-
-    function cekPassword() {
-      const inputPass = document.getElementById("admin-password").value;
-      if (inputPass === ADMIN_PASSWORD) {
-        adminLogin.classList.add("hidden");
-        adminPanel.classList.remove("hidden");
-        adminPanel.querySelector("select").value = temaAktif;
-        showToast("Login admin berhasil!");
-      } else {
-        showToast("Password salah!");
-      }
-    }
-
-    function ubahTema(value) {
-      localStorage.setItem('theme', value);
-      applyTheme(value);
-      showToast("Tema diubah ke: " + value);
-    }
-
-    function copyText(id) {
-      const text = document.getElementById(id).textContent;
-      navigator.clipboard.writeText(text);
-      showToast("Disalin: " + text);
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      toast.textContent = msg;
-      toast.classList.remove("hidden");
-      setTimeout(() => toast.classList.add("hidden"), 2000);
+      document.getElementById("qr-image").src = urlQR;
+      document.getElementById("qr-text").textContent = teksQR;
+      document.getElementById("qr-box").classList.remove("hidden");
     }
 
     function sudahBayar() {
       const nama = document.getElementById("nama").value || "Tanpa Nama";
+      const produk = document.getElementById("produk").value || "-";
+      const harga = document.getElementById("harga").value || "0";
+      const metode = document.getElementById("metode").value;
       const waktu = new Date().toLocaleString();
 
       document.getElementById("struk-nama").textContent = nama;
+      document.getElementById("struk-produk").textContent = produk;
+      document.getElementById("struk-harga").textContent = harga;
+      document.getElementById("struk-metode").textContent = metode;
       document.getElementById("struk-waktu").textContent = waktu;
-      document.getElementById("struk").classList.remove("hidden");
 
-      html2pdf().from(document.getElementById("struk")).save("struk-hanzyyoffc.pdf");
+      document.getElementById("struk").classList.remove("hidden");
+      html2pdf().from(document.getElementById("struk")).save(`struk-${nama}-${Date.now()}.pdf`);
     }
+
+    // DARK MODE OTOMATIS
+    const jam = new Date().getHours();
+    if (jam >= 18 || jam <= 5) document.getElementById('body').classList.add('dark');
   </script>
 </body>
 </html>
-
