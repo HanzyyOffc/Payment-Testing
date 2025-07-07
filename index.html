@@ -2,225 +2,221 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Modern UI dengan Navigasi</title>
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HanzyyOffc - Layanan Digital</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
     html, body {
-      height: 100%;
       font-family: 'Poppins', sans-serif;
-      transition: background 0.5s, color 0.5s;
+      transition: background 0.3s, color 0.3s;
     }
-
     body.dark { background: #0f0f0f; color: #fff; }
-    body.light { background: #f0f0f0; color: #111; }
+    body.light { background: #f9f9f9; color: #111; }
 
-    .theme-switcher {
-      position: absolute;
-      top: 20px; right: 20px;
-      z-index: 10;
+    nav {
+      position: sticky; top: 0;
+      display: flex; justify-content: space-between;
+      align-items: center; background: rgba(0,0,0,0.8);
+      padding: 10px 20px; z-index: 1000;
+      backdrop-filter: blur(10px);
     }
-
-    .theme-switcher button {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 8px;
-      background: #0ff;
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 0 10px #0ff;
-    }
-
-    .intro-container {
-      text-align: center;
-      padding: 40px 20px;
-      animation: introFade 2s ease-out forwards;
-      opacity: 0;
-      transform: scale(0.95);
-    }
-
-    @keyframes introFade {
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    h1 {
-      font-size: 2.8rem;
-      background: linear-gradient(90deg, #0ff, #00f, #f0f);
-      -webkit-background-clip: text;
+    .logo {
+      font-weight: 700; font-size: 1.2rem;
+      background: linear-gradient(90deg,#0ff,#00f); -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: glow 2s ease-in-out infinite alternate;
     }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #0ff; }
-      to { text-shadow: 0 0 30px #0ff, 0 0 60px #00f; }
-    }
-
-    p {
-      font-size: 1.1rem;
-      margin-top: 10px;
-    }
-
-    .button-grid {
-      margin-top: 30px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 15px;
-      padding: 20px;
-    }
-
-    .btn {
-      padding: 12px 20px;
-      border-radius: 10px;
+    .nav-links a {
+      margin-left: 15px;
+      color: #0ff; text-decoration: none;
       font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+    }
+    .nav-links a.active::after {
+      content: ''; display: block;
+      height: 2px; background: #0ff;
+    }
+    .theme-btn {
+      padding: 6px 12px; border-radius: 6px;
+      background: #0ff; color: #000; font-weight: 600;
+      border: none; cursor: pointer;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.3);
+    header {
+      text-align: center; padding: 60px 20px;
+      background: linear-gradient(145deg,#111,#222);
     }
-
-    .btn-glow   { background: #0ff; color: #000; }
-    .btn-purple { background: #a64bf4; color: #fff; }
-    .btn-red    { background: #ff4d4d; color: #fff; }
-    .btn-green  { background: #4dff88; color: #000; }
-    .btn-outline { background: transparent; border: 2px solid #0ff; color: inherit; }
-    .btn-outline:hover { background: #0ff; color: #000; }
-
-    .overload {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
-      animation: overloadFlash 3s linear infinite;
-      z-index: 0;
+    header h1 {
+      font-size: 2.4rem;
+      background: linear-gradient(90deg, #0ff, #f0f, #00f);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-
-    @keyframes overloadFlash {
-      0%, 100% { opacity: 0.05; }
-      50% { opacity: 0.2; }
-    }
-
-    #loader {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      transition: opacity 0.5s;
-    }
-
-    .spinner {
-      border: 6px solid #333;
-      border-top: 6px solid #0ff;
-      border-radius: 50%;
-      width: 60px; height: 60px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0); }
-      100% { transform: rotate(360deg); }
-    }
+    header p { margin-top: 12px; font-size: 1rem; }
 
     section {
-      padding: 100px 20px;
-      border-top: 1px dashed #888;
+      padding: 60px 20px;
+      border-top: 1px dashed #666;
+    }
+    section h2 {
       text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    ul.features {
+      list-style: none;
+      max-width: 600px;
+      margin: auto;
+      padding-left: 0;
+    }
+    ul.features li {
+      margin-bottom: 10px;
+      background: rgba(0,255,255,0.1);
+      padding: 10px 14px;
+      border-left: 4px solid #0ff;
+    }
+
+    .price-box {
+      background: #111;
+      color: #0ff;
+      max-width: 320px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,255,255,0.3);
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .cta-buttons a {
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      background: #0ff;
+      color: #000;
+      transition: all 0.3s ease;
+    }
+    .cta-buttons a:hover {
+      background: #00f;
+      color: #fff;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 10px;
+      font-size: 0.9rem;
+      background: #000;
+      color: #777;
     }
 
     @media (max-width: 600px) {
-      h1 { font-size: 2rem; }
-      p { font-size: 1rem; }
+      header h1 { font-size: 1.8rem; }
+      .cta-buttons a { width: 100%; text-align: center; }
     }
   </style>
 </head>
 <body class="dark">
 
-  <!-- Loader -->
-  <div id="loader"><div class="spinner"></div></div>
-
-  <!-- Theme Switcher -->
-  <div class="theme-switcher">
-    <button onclick="toggleTheme()">Ganti Tema</button>
-  </div>
-
-  <!-- Overload Effect -->
-  <div class="overload"></div>
-
-  <!-- Intro -->
-  <div class="intro-container">
-    <h1>Selamat Datang</h1>
-    <p>Navigasi cepat ke bagian halaman & halaman luar</p>
-
-    <div class="button-grid">
-      <button class="btn btn-glow" onclick="playClick(); scrollToId('section1')">
-        <i class="ri-arrow-down-line"></i>Ke Bagian 1
-      </button>
-      <button class="btn btn-purple" onclick="playClick(); scrollToId('section2')">
-        <i class="ri-arrow-down-double-line"></i>Ke Bagian 2
-      </button>
-      <a href="https://example.com" target="_blank" class="btn btn-green" onclick="playClick()">
-        <i class="ri-external-link-fill"></i>Halaman Luar
-      </a>
-      <button class="btn btn-red" onclick="playClick(); scrollToId('footer')">
-        <i class="ri-arrow-down-line"></i>Footer
-      </button>
-      <button class="btn btn-outline" onclick="playClick(); alert('Tentang Kami!')">
-        <i class="ri-information-line"></i>Tentang Kami
-      </button>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">HanzyyOffc</div>
+    <div class="nav-links">
+      <a href="#fitur" class="nav-link">Fitur</a>
+      <a href="#harga" class="nav-link">Harga</a>
+      <a href="#order" class="nav-link">Order</a>
     </div>
-  </div>
+    <button class="theme-btn" onclick="toggleTheme()">Tema</button>
+  </nav>
 
-  <!-- Sections -->
-  <section id="section1"><h2>Bagian 1</h2><p>Ini adalah konten bagian 1.</p></section>
-  <section id="section2"><h2>Bagian 2</h2><p>Ini adalah konten bagian 2.</p></section>
-  <section id="footer"><h2>Footer</h2><p>Kontak, Sosial Media, dll.</p></section>
+  <!-- Header -->
+  <header>
+    <h1>Produk Digital Premium</h1>
+    <p>Terima kasih telah mensupport HanzyyOffc ✨</p>
+  </header>
 
-  <!-- Sound -->
-  <audio id="introSound" src="https://assets.mixkit.co/active_storage/sfx/331/331-preview.mp3" preload="auto"></audio>
+  <!-- Fitur -->
+  <section id="fitur">
+    <h2>Fitur Produk</h2>
+    <ul class="features">
+      <li>✅ Get Function x Share tiap ada update</li>
+      <li>✅ Get Base Telegram & WhatsApp</li>
+      <li>✅ Script Obf/Bot Encrypt via Telegram</li>
+      <li>✅ Script Ubot Premium</li>
+      <li>✅ Buyer VIP Script SlayerV4</li>
+      <li>✅ Murid Script Private HanzyyOffc</li>
+      <li>✅ Admin Chanel Utama HanzyyOffc</li>
+      <li>✅ Script Add Database via WhatsApp</li>
+      <li>✅ Script Add Database via Telegram</li>
+      <li>✅ Promo ke semua channel HanzyyOffc</li>
+    </ul>
+  </section>
+
+  <!-- Harga -->
+  <section id="harga">
+    <h2>Harga & Penawaran</h2>
+    <div class="price-box">
+      <p>💳 Mulai dari <strong>Rp50.000</strong></p>
+      <p>🔥 Diskon 30% awal bulan!</p>
+    </div>
+  </section>
+
+  <!-- Order -->
+  <section id="order">
+    <h2>Pesan Sekarang</h2>
+    <div class="cta-buttons">
+      <a href="https://wa.me/6282264176976?text=Halo%2C+saya+mau+pesan+produk+HanzyyOffc" target="_blank">
+        <i class="ri-whatsapp-line"></i> WhatsApp
+      </a>
+      <a href="https://t.me/XyHanzyy" target="_blank">
+        <i class="ri-telegram-line"></i> Telegram
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 HanzyyOffc. All rights reserved.
+  </footer>
 
   <script>
-    // Loader
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('loader').style.opacity = '0';
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('introSound').play();
-      }, 2000);
-    });
-
-    // Theme
     function toggleTheme() {
-      document.body.classList.toggle('light');
-      document.body.classList.toggle('dark');
+      const b = document.body;
+      b.classList.toggle("light");
+      b.classList.toggle("dark");
+      localStorage.setItem("theme", b.classList.contains("dark") ? "dark" : "light");
     }
 
-    // Sound effect
-    function playClick() {
-      const sfx = new Audio('https://assets.mixkit.co/active_storage/sfx/1165/1165-preview.mp3');
-      sfx.play();
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(savedTheme);
+      }
 
-    // Scroll to section
-    function scrollToId(id) {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
+      // Scrollspy
+      const sections = document.querySelectorAll("section");
+      const navLinks = document.querySelectorAll(".nav-link");
+      window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach(sec => {
+          const top = window.scrollY;
+          const offset = sec.offsetTop - 80;
+          if (top >= offset) current = sec.getAttribute("id");
+        });
+        navLinks.forEach(link => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === "#" + current) {
+            link.classList.add("active");
+          }
+        });
+      });
+    });
   </script>
 </body>
 </html>
+
