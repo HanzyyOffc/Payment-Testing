@@ -2,91 +2,217 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pembayaran QR Produk - HanzyyOffc</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern UI Intro</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body.light {
+      background: #f0f0f0;
+      color: #111;
+    }
+
+    body.dark {
+      background: #0f0f0f;
+      color: #fff;
+    }
+
+    .intro-container {
+      text-align: center;
+      animation: introFade 2s ease-out forwards;
+      opacity: 0;
+      transform: scale(0.95);
+      z-index: 1;
+      position: relative;
+      padding: 20px;
+    }
+
+    @keyframes introFade {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(90deg, #0ff, #00f, #f0f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #0ff;
+      }
+      to {
+        text-shadow: 0 0 30px #0ff, 0 0 60px #00f;
+      }
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-top: 10px;
+      color: inherit;
+    }
+
+    .btn {
+      margin-top: 30px;
+      padding: 12px 30px;
+      background: transparent;
+      color: inherit;
+      border: 2px solid #0ff;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #0ff;
+      color: #000;
+      box-shadow: 0 0 15px #0ff, 0 0 40px #00f;
+    }
+
+    .overload {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+      animation: overloadFlash 3s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes overloadFlash {
+      0%, 100% {
+        opacity: 0.05;
+      }
+      50% {
+        opacity: 0.2;
+      }
+    }
+
+    .theme-switcher {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    .theme-switcher button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      background: #0ff;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 10px #0ff;
+    }
+
+    /* Loader Spinner */
+    #loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s;
+    }
+
+    .spinner {
+      border: 6px solid #333;
+      border-top: 6px solid #0ff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
-<body class="transition duration-500 bg-gray-100 text-black dark:bg-gray-900 dark:text-white" id="body">
+<body class="dark">
 
-  <div class="min-h-screen flex flex-col items-center justify-center px-4 py-10">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 max-w-md w-full text-center">
-      <h1 class="text-2xl font-bold text-indigo-600 dark:text-white mb-2">QR Pembayaran Produk</h1>
-      <p class="text-sm text-gray-500 dark:text-gray-300 mb-4">Masukkan detail produk untuk menghasilkan QR</p>
-
-      <div class="space-y-3 text-left mb-4">
-        <input id="produk" type="text" placeholder="Nama Produk" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
-        <input id="harga" type="number" placeholder="Harga (contoh: 15000)" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white" />
-        <select id="metode" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white">
-          <option value="DANA - 0886282627">DANA - 0886282627</option>
-          <option value="GOPAY - 82962829928">GOPAY - 82962829928</option>
-          <option value="OVO - 92829290010">OVO - 92829290010</option>
-        </select>
-        <button onclick="buatQR()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded">Buat QR</button>
-      </div>
-
-      <div id="qr-box" class="hidden">
-        <img id="qr-image" src="" alt="QR Pembayaran" class="w-48 h-48 mx-auto mb-2 rounded-lg border" />
-        <p class="text-sm" id="qr-text"></p>
-      </div>
-
-      <div class="mt-4">
-        <input id="nama" type="text" placeholder="Nama Anda" class="w-full mb-2 p-2 border rounded dark:bg-gray-700 dark:text-white" />
-        <button onclick="sudahBayar()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Sudah Bayar</button>
-      </div>
-    </div>
+  <!-- Loader -->
+  <div id="loader">
+    <div class="spinner"></div>
   </div>
 
-  <!-- STRUK -->
-  <div id="struk" class="p-6 max-w-sm w-full bg-white rounded-xl text-black hidden">
-    <h2 class="text-xl font-bold mb-4">Struk Pembayaran</h2>
-    <p><strong>Nama:</strong> <span id="struk-nama"></span></p>
-    <p><strong>Produk:</strong> <span id="struk-produk"></span></p>
-    <p><strong>Harga:</strong> Rp<span id="struk-harga"></span></p>
-    <p><strong>Waktu:</strong> <span id="struk-waktu"></span></p>
-    <p><strong>Metode:</strong> <span id="struk-metode"></span></p>
-    <p class="mt-4">Terima kasih telah membayar ke <strong>HanzyyOffc</strong> 🙏</p>
+  <!-- Theme switcher -->
+  <div class="theme-switcher">
+    <button onclick="toggleTheme()">Ganti Tema</button>
   </div>
+
+  <!-- Overload Effect -->
+  <div class="overload"></div>
+
+  <!-- Intro Section -->
+  <div class="intro-container">
+    <h1>Selamat Datang</h1>
+    <p>Ini adalah halaman modern dengan fitur lengkap!</p>
+    <button class="btn" onclick="playClick()">Mulai Sekarang</button>
+  </div>
+
+  <!-- Sound Effect -->
+  <audio id="introSound" src="https://assets.mixkit.co/active_storage/sfx/331/331-preview.mp3" preload="auto"></audio>
 
   <script>
-    function buatQR() {
-      const produk = document.getElementById("produk").value;
-      const harga = document.getElementById("harga").value;
-      const metode = document.getElementById("metode").value;
+    // Loading spinner timeout
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loader').style.opacity = '0';
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('introSound').play();
+      }, 2000);
+    });
 
-      if (!produk || !harga || !metode) {
-        alert("Lengkapi semua data produk.");
-        return;
-      }
-
-      const teksQR = `Produk: ${produk} | Harga: Rp${harga} | Metode: ${metode}`;
-      const urlQR = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(teksQR)}`;
-
-      document.getElementById("qr-image").src = urlQR;
-      document.getElementById("qr-text").textContent = teksQR;
-      document.getElementById("qr-box").classList.remove("hidden");
+    // Theme switcher
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+      document.body.classList.toggle('dark');
     }
 
-    function sudahBayar() {
-      const nama = document.getElementById("nama").value || "Tanpa Nama";
-      const produk = document.getElementById("produk").value || "-";
-      const harga = document.getElementById("harga").value || "0";
-      const metode = document.getElementById("metode").value;
-      const waktu = new Date().toLocaleString();
-
-      document.getElementById("struk-nama").textContent = nama;
-      document.getElementById("struk-produk").textContent = produk;
-      document.getElementById("struk-harga").textContent = harga;
-      document.getElementById("struk-metode").textContent = metode;
-      document.getElementById("struk-waktu").textContent = waktu;
-
-      document.getElementById("struk").classList.remove("hidden");
-      html2pdf().from(document.getElementById("struk")).save(`struk-${nama}-${Date.now()}.pdf`);
+    // Click sound
+    function playClick() {
+      const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1165/1165-preview.mp3');
+      clickSound.play();
     }
-
-    // DARK MODE OTOMATIS
-    const jam = new Date().getHours();
-    if (jam >= 18 || jam <= 5) document.getElementById('body').classList.add('dark');
   </script>
 </body>
 </html>
