@@ -114,6 +114,16 @@
       color: #777;
     }
 
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     @media (max-width: 600px) {
       header h1 { font-size: 1.8rem; }
       .cta-buttons a { width: 100%; text-align: center; }
@@ -121,26 +131,23 @@
   </style>
 </head>
 <body class="dark">
-
-  <!-- Navbar -->
   <nav>
     <div class="logo">HanzyyOffc</div>
     <div class="nav-links">
       <a href="#fitur" class="nav-link">Fitur</a>
       <a href="#harga" class="nav-link">Harga</a>
       <a href="#order" class="nav-link">Order</a>
+      <a href="#kontak" class="nav-link">Kontak</a>
     </div>
     <button class="theme-btn" onclick="toggleTheme()">Tema</button>
   </nav>
 
-  <!-- Header -->
-  <header>
+  <header class="reveal">
     <h1>Produk Digital Premium</h1>
     <p>Terima kasih telah mensupport HanzyyOffc ✨</p>
   </header>
 
-  <!-- Fitur -->
-  <section id="fitur">
+  <section id="fitur" class="reveal">
     <h2>Fitur Produk</h2>
     <ul class="features">
       <li>✅ Get Function x Share tiap ada update</li>
@@ -156,8 +163,7 @@
     </ul>
   </section>
 
-  <!-- Harga -->
-  <section id="harga">
+  <section id="harga" class="reveal">
     <h2>Harga & Penawaran</h2>
     <div class="price-box">
       <p>💳 Mulai dari <strong>Rp50.000</strong></p>
@@ -165,8 +171,7 @@
     </div>
   </section>
 
-  <!-- Order -->
-  <section id="order">
+  <section id="order" class="reveal">
     <h2>Pesan Sekarang</h2>
     <div class="cta-buttons">
       <a href="https://wa.me/6282264176976?text=Halo%2C+saya+mau+pesan+produk+HanzyyOffc" target="_blank">
@@ -175,10 +180,22 @@
       <a href="https://t.me/XyHanzyy" target="_blank">
         <i class="ri-telegram-line"></i> Telegram
       </a>
+      <a href="https://whatsapp.com/channel/0029VbBV9kJIt5rtqvbW9h1F" target="_blank">
+        <i class="ri-megaphone-line"></i> Join Channel WA
+      </a>
     </div>
   </section>
 
-  <!-- Footer -->
+  <section id="kontak" class="reveal">
+    <h2>Form Kontak</h2>
+    <form onsubmit="sendToWhatsapp(); return false;" style="max-width:500px;margin:auto;">
+      <input type="text" id="nama" placeholder="Nama Kamu" required style="width:100%;padding:10px;margin:10px 0;border-radius:6px;">
+      <input type="email" id="email" placeholder="Email Kamu" required style="width:100%;padding:10px;margin:10px 0;border-radius:6px;">
+      <textarea id="pesan" placeholder="Pesan Kamu" required style="width:100%;padding:10px;height:100px;margin:10px 0;border-radius:6px;"></textarea>
+      <button type="submit" style="padding:10px 20px;border:none;background:#0ff;color:#000;font-weight:bold;border-radius:8px;cursor:pointer;">Kirim ke WhatsApp</button>
+    </form>
+  </section>
+
   <footer>
     &copy; 2025 HanzyyOffc. All rights reserved.
   </footer>
@@ -191,32 +208,35 @@
       localStorage.setItem("theme", b.classList.contains("dark") ? "dark" : "light");
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    function sendToWhatsapp() {
+      const nama = document.getElementById("nama").value;
+      const email = document.getElementById("email").value;
+      const pesan = document.getElementById("pesan").value;
+      const text = `Halo Admin, saya ingin menghubungi Anda.%0A%0A*Nama:* ${nama}%0A*Email:* ${email}%0A*Pesan:* ${pesan}`;
+      const url = `https://wa.me/6282264176976?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    function revealOnScroll() {
+      const reveals = document.querySelectorAll(".reveal");
+      for (let i = 0; i < reveals.length; i++) {
+        const windowHeight = window.innerHeight;
+        const elementTop = reveals[i].getBoundingClientRect().top;
+        const elementVisible = 80;
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add("show");
+        }
+      }
+    }
+    window.addEventListener("scroll", revealOnScroll);
+    window.addEventListener("load", () => {
       const savedTheme = localStorage.getItem("theme");
       if (savedTheme) {
         document.body.classList.remove("light", "dark");
         document.body.classList.add(savedTheme);
       }
-
-      // Scrollspy
-      const sections = document.querySelectorAll("section");
-      const navLinks = document.querySelectorAll(".nav-link");
-      window.addEventListener("scroll", () => {
-        let current = "";
-        sections.forEach(sec => {
-          const top = window.scrollY;
-          const offset = sec.offsetTop - 80;
-          if (top >= offset) current = sec.getAttribute("id");
-        });
-        navLinks.forEach(link => {
-          link.classList.remove("active");
-          if (link.getAttribute("href") === "#" + current) {
-            link.classList.add("active");
-          }
-        });
-      });
+      revealOnScroll();
     });
   </script>
 </body>
 </html>
-
